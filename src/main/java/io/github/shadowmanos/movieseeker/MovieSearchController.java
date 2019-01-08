@@ -2,6 +2,7 @@ package io.github.shadowmanos.movieseeker;
 
 import io.github.shadowmanos.OMDb.SearchOMDb;
 import io.github.shadowmanos.themoviedb.SearchTheMovieDB;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
+import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
+
+@Validated
 @RestController
 public class MovieSearchController {
 
@@ -20,10 +24,10 @@ public class MovieSearchController {
                     "TheMovieDB", new SearchTheMovieDB()
             );
 
-    @GetMapping(path = "/movies/{movieTitle}")
+    @GetMapping(path = "/movies/{movieTitle}", produces = APPLICATION_JSON)
     public TitleDirectorResourcePage searchForMovies(
-            @PathVariable @NotBlank String movieTitle,
-            @RequestParam @NotBlank String api,
+            @PathVariable @NotBlank(message = "movieTitle can't be blank") String movieTitle,
+            @RequestParam @NotBlank(message = "api can't be blank") String api,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int pageSize) {
 
