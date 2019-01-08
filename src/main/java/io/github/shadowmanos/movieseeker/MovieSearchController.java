@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Map;
 
@@ -21,18 +20,18 @@ public class MovieSearchController {
                     "TheMovieDB", new SearchTheMovieDB()
             );
 
-    @GetMapping(path = "/movies/{movieTitle}?api={apiName}")
+    @GetMapping(path = "/movies/{movieTitle}")
     public TitleDirectorResourcePage searchForMovies(
-            @PathVariable @NotEmpty String movieTitle,
-            @RequestParam @NotEmpty String apiName,
-            @RequestParam @NotNull int page,
-            @RequestParam @NotNull int pageSize) {
+            @PathVariable @NotBlank String movieTitle,
+            @RequestParam @NotBlank String api,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
-        if (!MOVIE_APIS.containsKey(apiName)) {
+        if (!MOVIE_APIS.containsKey(api)) {
             throw new IllegalArgumentException("Unrecognized movie api name");
         }
 
-        List<TitleDirectorResource> movies = MOVIE_APIS.get(apiName).findMoviesByTitle(movieTitle, page, pageSize);
+        List<TitleDirectorResource> movies = MOVIE_APIS.get(api).findMoviesByTitle(movieTitle, page, pageSize);
         return new TitleDirectorResourcePage(page, pageSize, movies);
     }
 }
