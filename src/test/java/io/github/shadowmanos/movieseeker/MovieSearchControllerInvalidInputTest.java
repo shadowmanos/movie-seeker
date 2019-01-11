@@ -17,21 +17,32 @@ public class MovieSearchControllerInvalidInputTest {
     private WebTestClient testClient;
 
     @Test
-    public void invalidApiName() {
+    public void unknownApiName() {
         testClient.get()
                 .uri(ub -> ub.path("/movies/movieTitle").queryParam("api", "abc").build())
                 .accept(APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isBadRequest()
-                .expectBody().jsonPath("message", "movieTitle can't be blank");
+                .expectBody().jsonPath("detail", "unrecognized movie api name");
     }
 
     @Test
-    public void invalidMovieTitle() {
+    public void blankApiName() {
         testClient.get()
-                .uri(ub -> ub.path("/movies/ ").queryParam("api", "OMDb").build())
+                .uri(ub -> ub.path("/movies/movieTitle").queryParam("api", " ").build())
                 .accept(APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isBadRequest();
+                .expectStatus().isBadRequest()
+                .expectBody().jsonPath("detail", "api can't be blank");
+    }
+
+    @Test
+    public void blankMovieTitle() {
+        testClient.get()
+                .uri(ub -> ub.path("/movies/ ").queryParam("api", "omdb").build())
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody().jsonPath("detail", "movieTitle can't be blank");
     }
 }
