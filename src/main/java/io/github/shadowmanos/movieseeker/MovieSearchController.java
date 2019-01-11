@@ -1,41 +1,40 @@
 package io.github.shadowmanos.movieseeker;
 
-import io.github.shadowmanos.OMDb.SearchOMDb;
-import io.github.shadowmanos.themoviedb.SearchTheMovieDB;
+import io.github.shadowmanos.movieseeker.omdb.SearchOMDb;
+import io.github.shadowmanos.movieseeker.themoviedb.SearchTheMovieDB;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
-import java.util.Map;
-
-import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
 
 @Validated
 @RestController
 public class MovieSearchController {
 
-    private static final Map<String, MovieSeeker> MOVIE_APIS =
-            Map.of(
-                    "OMDb", new SearchOMDb(),
-                    "TheMovieDB", new SearchTheMovieDB()
-            );
+    private final SearchOMDb searchOMDb;
+    private final SearchTheMovieDB searchTheMovieDB;
 
-    @GetMapping(path = "/movies/{movieTitle}", produces = APPLICATION_JSON)
-    public TitleDirectorResourcePage searchForMovies(
+    public MovieSearchController(SearchOMDb searchOMDb, SearchTheMovieDB searchTheMovieDB) {
+        this.searchOMDb = searchOMDb;
+        this.searchTheMovieDB = searchTheMovieDB;
+    }
+
+    @GetMapping(path = "/movies/{movieTitle}")
+    public Flux<MovieResult> searchForMovies(
             @PathVariable @NotBlank(message = "movieTitle can't be blank") String movieTitle,
             @RequestParam @NotBlank(message = "api can't be blank") String api,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "1") int page) {
 
-        if (!MOVIE_APIS.containsKey(api)) {
-            throw new IllegalArgumentException("Unrecognized movie api name");
+        switch (api) {
+            case "omdb":
+                return searchOMDb.findMoviesByTitle(movieTitle, page);
+            case "themoviedb":
+                return searchTheMovieDB.findMoviesByTitle(movieTitle, page);
         }
-
-        List<TitleDirectorResource> movies = MOVIE_APIS.get(api).findMoviesByTitle(movieTitle, page, pageSize);
-        return new TitleDirectorResourcePage(page, pageSize, movies);
+        throw new IllegalArgumentException("unrecognized movie api name");
     }
 }

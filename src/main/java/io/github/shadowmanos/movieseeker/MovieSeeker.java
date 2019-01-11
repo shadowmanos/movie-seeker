@@ -1,8 +1,7 @@
 package io.github.shadowmanos.movieseeker;
 
-import java.util.List;
+import reactor.core.publisher.Flux;
 
-public interface MovieSeeker {
-
-    List<TitleDirectorResource> findMoviesByTitle(String title, int page, int pageSize);
+public abstract class MovieSeeker {
+    public abstract Flux<MovieResult> findMoviesByTitle(String title, int page);
 }
