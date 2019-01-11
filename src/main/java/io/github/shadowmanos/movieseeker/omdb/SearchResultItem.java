@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 @Getter
-class SearchResultItem {
+public class SearchResultItem {
 
     private final String imdbid;
 

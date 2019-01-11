@@ -26,14 +26,13 @@ public class SearchOMDb extends MovieSeeker {
 
     @Override
     public Flux<MovieResult> findMoviesByTitle(String title, int page) {
-        Flux<SearchResultItem> searchResult = searchByMovieTitle(title, page);
+        var searchResult = searchByMovieTitle(title, page);
         return retrieveAllMovies(searchResult);
     }
 
     private Flux<SearchResultItem> searchByMovieTitle(String title, int page) {
-        String uri = "/?apikey=" + apiKey + "&s=" + title + "&page=" + page + "type=movie";
         return client.get()
-                .uri(uri)
+                .uri("/?apikey=" + apiKey + "&s=" + title + "&page=" + page + "&type=movie")
                 .retrieve()
                 .bodyToMono(SearchResult.class)
                 .flatMapIterable(SearchResult::getSearch);

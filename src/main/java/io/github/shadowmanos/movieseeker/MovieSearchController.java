@@ -2,6 +2,7 @@ package io.github.shadowmanos.movieseeker;
 
 import io.github.shadowmanos.movieseeker.omdb.SearchOMDb;
 import io.github.shadowmanos.movieseeker.themoviedb.SearchTheMovieDB;
+import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,15 +14,11 @@ import javax.validation.constraints.NotBlank;
 
 @Validated
 @RestController
+@AllArgsConstructor
 public class MovieSearchController {
 
     private final SearchOMDb searchOMDb;
     private final SearchTheMovieDB searchTheMovieDB;
-
-    public MovieSearchController(SearchOMDb searchOMDb, SearchTheMovieDB searchTheMovieDB) {
-        this.searchOMDb = searchOMDb;
-        this.searchTheMovieDB = searchTheMovieDB;
-    }
 
     @GetMapping(path = "/movies/{movieTitle}")
     public Flux<MovieResult> searchForMovies(
