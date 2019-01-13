@@ -22,9 +22,22 @@ public class MovieSearchControllerTest {
     private WebTestClient testClient;
 
     @Test
-    public void searchForMovies() {
+    public void searchOMDb() {
         testClient.get()
                 .uri("/movies/batman?api=omdb")
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$").isArray()
+                .jsonPath("$[0].title").value(StringContains.containsString("atman"))
+                .jsonPath("$[1].title").value(StringContains.containsString("atman"));
+    }
+
+    @Test
+    public void searchMovieDB() {
+        testClient.get()
+                .uri("/movies/batman?api=themoviedb")
                 .accept(APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
