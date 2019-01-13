@@ -8,6 +8,7 @@ import java.util.List;
 
 @Getter
 public class SearchResult {
+
     private List<SearchResultItem> search;
 
     @JsonCreator

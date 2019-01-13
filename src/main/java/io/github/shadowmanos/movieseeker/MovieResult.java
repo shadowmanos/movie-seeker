@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class MovieResult {
+
     private final String title;
     private final String director;
 

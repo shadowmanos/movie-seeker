@@ -14,6 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Configuration
 public class AppConfig {
+
     @Bean
     public CodecCustomizer jacksonJsonCustomizer(ObjectMapper mapper) {
         mapper.enable(ACCEPT_CASE_INSENSITIVE_PROPERTIES);

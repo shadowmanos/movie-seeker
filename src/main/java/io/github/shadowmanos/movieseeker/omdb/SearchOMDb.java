@@ -39,9 +39,8 @@ public class SearchOMDb extends MovieSeeker {
     }
 
     private Flux<MovieResult> retrieveAllMovies(Flux<SearchResultItem> searchResults) {
-        return searchResults
-                .map(SearchResultItem::getImdbid)
-                .flatMap(i -> client.get().uri("/?apikey=" + apiKey + "&i=" + i)
+        return searchResults.map(SearchResultItem::getImdbid)
+                .flatMap(id -> client.get().uri("/?apikey=" + apiKey + "&i=" + id)
                         .retrieve()
                         .bodyToFlux(MovieResult.class));
     }
