@@ -23,7 +23,11 @@ Compile the application by going to the root folder and running:
 
 `mvn spring-boot:run`
 
-and test with curl by running:
+to check if the application runs visit the health endpoint:
+
+`curl -v "http://127.0.0.1:8080/actuator/health"`
+
+to get some results with curl by running:
 
 `curl -v "http://127.0.0.1:8080/movies/guardians?api=themoviedb&page=1"`
 
