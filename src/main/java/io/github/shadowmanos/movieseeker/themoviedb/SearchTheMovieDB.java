@@ -44,6 +44,6 @@ public class SearchTheMovieDB extends MovieSeeker {
                 .bodyToMono(MovieCrewResult.class)
                 .flatMapIterable(MovieCrewResult::getCrew)
                 .filter(crewMember -> "Director".equalsIgnoreCase(crewMember.getJob()))
-                .map(crewMember -> new MovieResult(movie.getTitle(), crewMember.getName())));
+                .map(crewMember -> new MovieResult(movie.getTitle(), movie.getYear(), crewMember.getName())));
     }
 }
